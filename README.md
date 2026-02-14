@@ -20,6 +20,14 @@ python3 -m http.server
 
 Then visit `http://localhost:8000`.
 
+## How It Works
+1. **Step list generation**: The app parses JavaScript with Acorn and builds a list of executable lines.
+2. **Stepping**: Each step highlights the active line and updates the UI panels.
+3. **Breakpoints**: Click the gutter or line numbers to toggle breakpoints.
+4. **State panels**: Variables, call stack, watches, and console output refresh after each step.
+5. **Persistence**: Code, tabs, breakpoints, watches, and theme are saved to localStorage.
+6. **Timeline**: The scrubber lets you jump back to a previously recorded step.
+
 ## Features
 - Run / step controls with adjustable speed
 - Breakpoints (click line numbers or gutter)

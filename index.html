@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Visual Code Debugger - Step Through Execution</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1 aria-label="DevDebug Studio">DevDebug Studio</h1>
+
+            <div class="controls">
+                <button class="btn success" id="run-btn" aria-label="Run">
+                    ▶ Run
+                </button>
+                <button class="btn" id="step-btn" disabled aria-label="Step Over">
+                    ⏭ Step Over
+                </button>
+                <button class="btn" id="step-into-btn" disabled aria-label="Step Into">
+                    ⤵ Step Into
+                </button>
+                <button class="btn" id="step-out-btn" disabled aria-label="Step Out">
+                    ⤴ Step Out
+                </button>
+                <button class="btn" id="step-back-btn" disabled aria-label="Step Back">
+                    ⏮ Step Back
+                </button>
+                <button class="btn" id="continue-btn" disabled aria-label="Continue">
+                    ▶▶ Continue
+                </button>
+                <button class="btn danger" id="stop-btn" disabled aria-label="Stop">
+                    ⏹ Stop
+                </button>
+            </div>
+
+            <div class="speed-control">
+                <label>Speed:</label>
+                <input type="range" id="speed" min="100" max="1500" value="500" step="100" aria-label="Playback speed">
+                <span id="speed-value">500ms</span>
+                <select id="speed-preset" class="speed-preset" aria-label="Speed preset">
+                    <option value="1500">Slow</option>
+                    <option value="500" selected>Normal</option>
+                    <option value="200">Fast</option>
+                </select>
+            </div>
+
+            <div class="theme-toggle">
+                <button class="btn" id="theme-toggle-btn" aria-label="Toggle light mode">☀ Light</button>
+            </div>
+        </div>
+
+        <div class="main-content">
+            <div class="editor-section">
+                <div class="examples">
+                    <div class="examples-label">Load Example:</div>
+                    <div class="example-buttons">
+                        <button class="example-btn" data-example="fibonacci">Fibonacci</button>
+                        <button class="example-btn" data-example="factorial">Factorial</button>
+                        <button class="example-btn" data-example="bubblesort">Bubble Sort</button>
+                        <button class="example-btn" data-example="recursion">Recursion</button>
+                        <button class="example-btn" data-example="closure">Closure</button>
+                        <button class="example-btn" id="save-example-btn">Save Example</button>
+                    </div>
+                    <div class="example-buttons" id="custom-examples"></div>
+                </div>
+
+                <div class="tabs">
+                    <div class="tab active" data-tab="main.js">main.js</div>
+                    <div class="tab" data-tab="utils.js">utils.js</div>
+                    <button class="tab add-tab" id="add-tab-btn" aria-label="Add file">+</button>
+                </div>
+
+                <div class="editor-container">
+                    <div class="line-numbers" id="line-numbers"></div>
+                    <div class="breakpoint-gutter" id="breakpoint-gutter">
+                        <div class="current-line-marker" id="current-line-marker" aria-hidden="true"></div>
+                    </div>
+                    <div class="current-line-highlight" id="current-line-highlight" aria-hidden="true"></div>
+                    <div class="error-overlay" id="error-overlay" aria-live="polite"></div>
+                    <textarea class="editor" id="editor" spellcheck="false">// Write your JavaScript code here
+// Click line numbers to set breakpoints
+
+function greet(name) {
+    const message = "Hello, " + name + "!";
+    console.log(message);
+    return message;
+}
+
+function main() {
+    const names = ["Alice", "Bob", "Charlie"];
+
+    for (let i = 0; i < names.length; i++) {
+        const result = greet(names[i]);
+        console.log("Returned:", result);
+    }
+
+    console.log("Done!");
+}
+
+main();</textarea>
+                </div>
+            </div>
+
+            <div class="sidebar">
+                <div class="panel variables-panel">
+                    <button class="panel-header" type="button" aria-expanded="true">
+                        <span>Variables</span>
+                        <span class="expand-icon">▼</span>
+                    </button>
+                    <div class="panel-content" id="variables">
+                        <div class="empty-state">Run code to see variables</div>
+                    </div>
+                </div>
+
+                <div class="panel callstack-panel">
+                    <button class="panel-header" type="button" aria-expanded="true">
+                        <span>Call Stack</span>
+                        <span class="expand-icon">▼</span>
+                    </button>
+                    <div class="panel-content" id="callstack">
+                        <div class="empty-state">No active call stack</div>
+                    </div>
+                </div>
+
+                <div class="panel watches-panel">
+                    <button class="panel-header" type="button" aria-expanded="true">
+                        <span>Watches</span>
+                        <span class="expand-icon">▼</span>
+                    </button>
+                    <div class="panel-content" id="watches">
+                        <div class="watch-input">
+                            <input type="text" id="watch-input" placeholder="Add watch expression">
+                            <button class="btn" id="watch-add-btn" aria-label="Add watch">+</button>
+                        </div>
+                        <div class="watch-list" id="watch-list">
+                            <div class="empty-state">No watch expressions</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="panel console-panel">
+                    <button class="panel-header" type="button" aria-expanded="true">
+                        <span>Console Output</span>
+                        <span class="expand-icon">▼</span>
+                    </button>
+                    <div class="panel-content" id="console">
+                        <div class="empty-state">Console output will appear here</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="status-bar" id="status-bar" role="status" aria-live="polite">
+            <span id="status-text">Stopped</span>
+            <span id="status-pos">Line: — | Step: —</span>
+        </div>
+        <div class="timeline">
+            <label for="timeline-range">Timeline</label>
+            <input type="range" id="timeline-range" min="0" max="0" value="0" step="1">
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/acorn/8.11.2/acorn.min.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>

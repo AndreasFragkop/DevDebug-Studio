@@ -7,10 +7,13 @@
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+    <!-- App shell -->
     <div class="container">
+        <!-- Top header with title, controls, and speed/theme -->
         <div class="header">
             <h1 aria-label="DevDebug Studio">DevDebug Studio</h1>
 
+            <!-- Debugger control buttons -->
             <div class="controls">
                 <button class="btn success" id="run-btn" aria-label="Run">
                     ▶ Run
@@ -35,6 +38,7 @@
                 </button>
             </div>
 
+            <!-- Playback speed control -->
             <div class="speed-control">
                 <label>Speed:</label>
                 <input type="range" id="speed" min="100" max="1500" value="500" step="100" aria-label="Playback speed">
@@ -46,13 +50,16 @@
                 </select>
             </div>
 
+            <!-- Light/Dark theme toggle -->
             <div class="theme-toggle">
                 <button class="btn" id="theme-toggle-btn" aria-label="Toggle light mode">☀ Light</button>
             </div>
         </div>
 
+        <!-- Main split layout: editor on left, inspector panels on right -->
         <div class="main-content">
             <div class="editor-section">
+                <!-- Example loader -->
                 <div class="examples">
                     <div class="examples-label">Load Example:</div>
                     <div class="example-buttons">
@@ -66,12 +73,14 @@
                     <div class="example-buttons" id="custom-examples"></div>
                 </div>
 
+                <!-- File tabs -->
                 <div class="tabs">
                     <div class="tab active" data-tab="main.js">main.js</div>
                     <div class="tab" data-tab="utils.js">utils.js</div>
                     <button class="tab add-tab" id="add-tab-btn" aria-label="Add file">+</button>
                 </div>
 
+                <!-- Editor area with line numbers + breakpoint gutter -->
                 <div class="editor-container">
                     <div class="line-numbers" id="line-numbers"></div>
                     <div class="breakpoint-gutter" id="breakpoint-gutter">
@@ -103,6 +112,7 @@ main();</textarea>
                 </div>
             </div>
 
+            <!-- Right sidebar: variables, call stack, watches, console -->
             <div class="sidebar">
                 <div class="panel variables-panel">
                     <button class="panel-header" type="button" aria-expanded="true">
@@ -151,6 +161,8 @@ main();</textarea>
                 </div>
             </div>
         </div>
+
+        <!-- Status and timeline controls -->
         <div class="status-bar" id="status-bar" role="status" aria-live="polite">
             <span id="status-text">Stopped</span>
             <span id="status-pos">Line: — | Step: —</span>
@@ -161,7 +173,9 @@ main();</textarea>
         </div>
     </div>
 
+    <!-- Parsing library (Acorn) -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/acorn/8.11.2/acorn.min.js"></script>
+    <!-- App logic -->
     <script src="script.js"></script>
 </body>
 </html>

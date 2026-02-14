@@ -1,9 +1,11 @@
+/* Global reset */
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
 }
 
+/* Theme tokens (default: dark) */
 :root {
     --bg: #1e1e1e;
     --bg-alt: #252526;
@@ -23,6 +25,7 @@
     --error: #f48771;
 }
 
+/* Base page layout */
 body {
     font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
     background: var(--bg);
@@ -31,6 +34,7 @@ body {
     overflow: hidden;
 }
 
+/* Light theme overrides */
 body.light {
     --bg: #f5f6f8;
     --bg-alt: #ffffff;
@@ -50,12 +54,14 @@ body.light {
     --error: #b42318;
 }
 
+/* App shell layout */
 .container {
     display: grid;
     grid-template-rows: 60px 1fr;
     height: 100vh;
 }
 
+/* Header area */
 .header {
     background: var(--bg-panel);
     border-bottom: 1px solid var(--border);
@@ -72,12 +78,14 @@ body.light {
     margin-right: auto;
 }
 
+/* Top control bar */
 .controls {
     display: flex;
     gap: 10px;
     align-items: center;
 }
 
+/* Primary button styling */
 .btn {
     padding: 8px 16px;
     background: var(--primary);
@@ -92,6 +100,7 @@ body.light {
     gap: 6px;
 }
 
+/* Keyboard focus visibility */
 .btn:focus-visible {
     outline: 2px solid var(--accent);
     outline-offset: 2px;
@@ -123,6 +132,7 @@ body.light {
     background: var(--danger-hover);
 }
 
+/* Speed control cluster */
 .speed-control {
     display: flex;
     align-items: center;
@@ -144,6 +154,7 @@ body.light {
     margin-left: 10px;
 }
 
+/* Speed preset dropdown */
 .speed-preset {
     background: var(--bg);
     color: var(--text);
@@ -153,6 +164,7 @@ body.light {
     padding: 4px 6px;
 }
 
+/* Two-column main area */
 .main-content {
     display: grid;
     grid-template-columns: 1fr 400px;
@@ -160,6 +172,7 @@ body.light {
     overflow: hidden;
 }
 
+/* Editor column */
 .editor-section {
     display: flex;
     flex-direction: column;
@@ -167,6 +180,7 @@ body.light {
     border-right: 1px solid var(--border);
 }
 
+/* File tabs */
 .tabs {
     background: var(--bg-panel);
     border-bottom: 1px solid var(--border);
@@ -197,6 +211,7 @@ body.light {
     border-bottom-color: var(--bg);
 }
 
+/* Editor container with gutters */
 .editor-container {
     flex: 1;
     display: flex;
@@ -204,6 +219,7 @@ body.light {
     overflow: hidden;
 }
 
+/* Line numbers column */
 .line-numbers {
     background: var(--bg);
     padding: 15px 10px;
@@ -219,6 +235,7 @@ body.light {
     transform: none;
 }
 
+/* Breakpoint gutter */
 .breakpoint-gutter {
     width: 20px;
     background: var(--bg);
@@ -260,6 +277,7 @@ body.light {
     transform: translateY(-50%);
 }
 
+/* Main editor text area */
 .editor {
     flex: 1;
     padding: 15px;
@@ -320,6 +338,7 @@ body.light {
     background: rgba(127, 127, 127, 0.1);
 }
 
+/* Sidebar column */
 .sidebar {
     background: var(--bg-alt);
     display: flex;
@@ -327,12 +346,14 @@ body.light {
     overflow: hidden;
 }
 
+/* Generic panel */
 .panel {
     border-bottom: 1px solid var(--border);
     display: flex;
     flex-direction: column;
 }
 
+/* Panel header button */
 .panel-header {
     background: var(--bg-panel);
     padding: 10px 15px;
@@ -485,6 +506,7 @@ body.light {
 .syntax-comment { color: #6a9955; font-style: italic; }
 .syntax-operator { color: #d4d4d4; }
 
+/* Example loader area */
 .examples {
     padding: 10px 15px;
     background: var(--bg-panel);
@@ -505,6 +527,7 @@ body.light {
     flex-wrap: wrap;
 }
 
+/* Example buttons */
 .example-btn {
     padding: 4px 10px;
     background: var(--bg-muted);
@@ -521,6 +544,7 @@ body.light {
     border-color: var(--primary);
 }
 
+/* Watches input + list */
 .watch-input {
     display: flex;
     gap: 8px;
@@ -553,6 +577,7 @@ body.light {
     font-size: 12px;
 }
 
+/* App status bar */
 .status-bar {
     background: var(--primary);
     color: white;
@@ -563,6 +588,7 @@ body.light {
     align-items: center;
 }
 
+/* Timeline scrubber */
 .timeline {
     background: var(--bg-muted);
     border-top: 1px solid var(--border);
@@ -578,6 +604,7 @@ body.light {
     flex: 1;
 }
 
+/* Empty states */
 .empty-state {
     color: var(--text-muted);
     font-size: 12px;

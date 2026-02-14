@@ -1,4 +1,8 @@
-// State
+// =========================
+// State and configuration
+// =========================
+// Runtime state for the debugger simulation
+// (these values are mutated during stepping)
 let code = '';
 let ast = null;
 let executionSteps = [];
@@ -22,6 +26,7 @@ let activeTab = 'main.js';
 let breakpointConditions = new Map();
 let stepSnapshots = [];
 
+// Keys used for localStorage persistence
 const STORAGE_KEYS = {
     code: 'devdebug.code',
     breakpoints: 'devdebug.breakpoints',
@@ -33,7 +38,9 @@ const STORAGE_KEYS = {
     theme: 'devdebug.theme',
 };
 
-// DOM elements
+// =========================
+// DOM references
+// =========================
 const editor = document.getElementById('editor');
 const lineNumbers = document.getElementById('line-numbers');
 const breakpointGutter = document.getElementById('breakpoint-gutter');
@@ -65,7 +72,9 @@ const speedInput = document.getElementById('speed');
 const speedValue = document.getElementById('speed-value');
 const themeToggleBtn = document.getElementById('theme-toggle-btn');
 
+// =========================
 // Example code snippets
+// =========================
 const examples = {
     fibonacci: `// Fibonacci sequence generator
 function fibonacci(n) {
@@ -160,7 +169,10 @@ counter();
 counter();`
 };
 
-// Initialize
+// =========================
+// Initial setup
+// =========================
+// Restore persisted state and prime UI
 restoreState();
 updateLineNumbers();
 updateBreakpoints();
@@ -172,6 +184,7 @@ syncEditorWithActiveTab();
 updateTimeline();
 applySavedTheme();
 
+// Debounced line-number refresh to avoid heavy DOM updates per keystroke
 const debouncedLineNumbers = debounce(updateLineNumbers, 80);
 editor.addEventListener('input', () => {
     debouncedLineNumbers();
@@ -181,6 +194,9 @@ editor.addEventListener('input', () => {
 });
 editor.addEventListener('scroll', syncScroll);
 
+// =========================
+// UI controls and event handlers
+// =========================
 // Speed control
 speedInput.addEventListener('input', (e) => {
     stepDelay = parseInt(e.target.value, 10);
@@ -188,6 +204,7 @@ speedInput.addEventListener('input', (e) => {
     speedPreset.value = String(stepDelay);
 });
 
+// Speed preset dropdown
 speedPreset.addEventListener('change', (e) => {
     const val = parseInt(e.target.value, 10);
     stepDelay = val;
@@ -195,6 +212,7 @@ speedPreset.addEventListener('change', (e) => {
     speedValue.textContent = stepDelay + 'ms';
 });
 
+// Light/Dark theme toggle
 themeToggleBtn.addEventListener('click', () => {
     const isLight = document.body.classList.toggle('light');
     themeToggleBtn.textContent = isLight ? '🌙 Dark' : '☀ Light';
@@ -214,6 +232,7 @@ document.querySelectorAll('.example-btn').forEach((btn) => {
     });
 });
 
+// Save current editor content as a custom example
 saveExampleBtn.addEventListener('click', () => {
     const name = window.prompt('Name this example:');
     if (!name) return;
@@ -242,6 +261,7 @@ stepBackBtn.addEventListener('click', stepBack);
 continueBtn.addEventListener('click', continueExecution);
 stopBtn.addEventListener('click', stop);
 
+// Add a new file tab
 addTabBtn.addEventListener('click', () => {
     const name = window.prompt('New file name:', 'new.js');
     if (!name) return;
@@ -270,11 +290,13 @@ document.addEventListener('click', (event) => {
     }
 });
 
+// Watch input handling
 watchAddBtn.addEventListener('click', addWatchFromInput);
 watchInput.addEventListener('keydown', (e) => {
     if (e.key === 'Enter') addWatchFromInput();
 });
 
+// Keyboard shortcuts for stepping
 window.addEventListener('keydown', (e) => {
     if (e.key === 'F5') {
         e.preventDefault();
@@ -294,11 +316,15 @@ window.addEventListener('keydown', (e) => {
     }
 });
 
+// Timeline scrubber navigation
 timelineRange.addEventListener('input', (e) => {
     const idx = parseInt(e.target.value, 10);
     jumpToStep(idx);
 });
 
+// =========================
+// UI helpers (gutters, scroll sync)
+// =========================
 function updateLineNumbers() {
     const lines = editor.value.split('\n');
     lineNumbers.innerHTML = lines.map((_, i) => `${i + 1}<br>`).join('');
@@ -331,6 +357,9 @@ function updateBreakpoints() {
     persistBreakpointConditions();
 }
 
+// =========================
+// Debugger controls (run/step/pause/stop)
+// =========================
 function run() {
     reset();
     code = editor.value;
@@ -376,6 +405,9 @@ function run() {
     }
 }
 
+// =========================
+// Execution instrumentation and stepping
+// =========================
 function instrumentCode(code) {
     // Simplified step tracking - split by lines and statements
     const lines = code.split('\n');
@@ -422,6 +454,7 @@ function instrumentCode(code) {
     updateTimeline();
 }
 
+// Execute the next step in the precomputed step list
 function step() {
     if (currentStep >= executionSteps.length) {
         stop();
@@ -461,6 +494,7 @@ function step() {
     updateUI();
 }
 
+// Step variants (currently alias to step)
 function stepOver() {
     step();
 }
@@ -469,6 +503,9 @@ function stepInto() {
     step();
 }
 
+// =========================
+// Simulated execution and state tracking
+// =========================
 function trackExecution(step) {
     // Simulate variable tracking (simplified)
     const code = step.code.trim();
@@ -508,6 +545,7 @@ function trackExecution(step) {
     }
 }
 
+// Infer a simple type for display
 function guessType(value) {
     if (value.match(/^\d+$/)) return 'number';
     if (value.match(/^["'].*["']$/)) return 'string';
@@ -517,6 +555,7 @@ function guessType(value) {
     return 'unknown';
 }
 
+// Highlight the active source line in the editor gutter
 function highlightLine(lineNum) {
     currentLine = lineNum;
     updateCurrentLinePosition();
@@ -533,6 +572,9 @@ function updateCurrentLinePosition() {
     currentLineMarker.style.opacity = '1';
 }
 
+// =========================
+// Flow control helpers
+// =========================
 function stepOut() {
     // Continue until current function returns
     const targetStackDepth = callStack.length - 1;
@@ -542,6 +584,7 @@ function stepOut() {
     }
 }
 
+// Resume auto-stepping after a pause
 function continueExecution() {
     isPaused = false;
     updateControls();
@@ -549,6 +592,7 @@ function continueExecution() {
     autoRun();
 }
 
+// Pause auto-stepping (e.g., at a breakpoint)
 function pause() {
     isPaused = true;
     clearInterval(autoRunInterval);
@@ -556,6 +600,7 @@ function pause() {
     updateStatusBar('Paused');
 }
 
+// Stop the run and clear highlights
 function stop() {
     isRunning = false;
     isPaused = false;
@@ -570,6 +615,7 @@ function stop() {
     updateStatusBar('Stopped');
 }
 
+// Reset all runtime state and UI
 function reset() {
     stop();
     callStack = [];
@@ -582,6 +628,7 @@ function reset() {
     updateUI();
 }
 
+// Auto-run loop for continuous stepping
 function autoRun() {
     clearInterval(autoRunInterval);
 
@@ -597,6 +644,7 @@ function autoRun() {
     }, stepDelay);
 }
 
+// Enable/disable UI buttons based on current state
 function updateControls() {
     runBtn.disabled = isRunning;
     stepBtn.disabled = !isRunning || currentStep >= executionSteps.length;
@@ -607,6 +655,7 @@ function updateControls() {
     stopBtn.disabled = !isRunning;
 }
 
+// Refresh all panels and status
 function updateUI() {
     updateVariablesPanel();
     updateCallStackPanel();
@@ -616,6 +665,9 @@ function updateUI() {
     updateControls();
 }
 
+// =========================
+// Panel rendering
+// =========================
 function updateVariablesPanel() {
     if (Object.keys(variables).length === 0) {
         variablesPanel.innerHTML = '<div class="empty-state">No variables in scope</div>';
@@ -750,6 +802,9 @@ function stepBack() {
     updateUI();
 }
 
+// =========================
+// Watch expressions
+// =========================
 function renderWatches() {
     if (!watchList) return;
     if (watches.length === 0) {
@@ -780,6 +835,7 @@ function renderWatches() {
     });
 }
 
+// Add a new watch expression from the input field
 function addWatchFromInput() {
     const value = watchInput.value.trim();
     if (!value) return;
@@ -820,6 +876,9 @@ function coerceValue(value, type) {
     return value;
 }
 
+// =========================
+// Persistence (localStorage)
+// =========================
 function persistCode() {
     localStorage.setItem(STORAGE_KEYS.code, editor.value);
 }
@@ -880,6 +939,9 @@ function applySavedTheme() {
     themeToggleBtn.textContent = isLight ? '🌙 Dark' : '☀ Light';
 }
 
+// =========================
+// Utilities
+// =========================
 function debounce(fn, wait) {
     let t = null;
     return (...args) => {

@@ -60,6 +60,7 @@ const speedPreset = document.getElementById('speed-preset');
 const saveExampleBtn = document.getElementById('save-example-btn');
 const customExamples = document.getElementById('custom-examples');
 const addTabBtn = document.getElementById('add-tab-btn');
+const clearTabBtn = document.getElementById('clear-tab-btn');
 
 const runBtn = document.getElementById('run-btn');
 const stepBtn = document.getElementById('step-btn');
@@ -215,7 +216,7 @@ speedPreset.addEventListener('change', (e) => {
 // Light/Dark theme toggle
 themeToggleBtn.addEventListener('click', () => {
     const isLight = document.body.classList.toggle('light');
-    themeToggleBtn.textContent = isLight ? '🌙 Dark' : '☀ Light';
+    themeToggleBtn.textContent = isLight ? 'Dark Mode' : 'Light Mode';
     localStorage.setItem(STORAGE_KEYS.theme, isLight ? 'light' : 'dark');
 });
 
@@ -272,6 +273,17 @@ addTabBtn.addEventListener('click', () => {
     persistActiveTab();
     renderTabs();
     syncEditorWithActiveTab();
+});
+
+// Clear current tab content
+clearTabBtn.addEventListener('click', () => {
+    const confirmClear = window.confirm(`Clear all code in ${activeTab}?`);
+    if (!confirmClear) return;
+    editor.value = '';
+    buffers[activeTab] = '';
+    persistBuffers();
+    updateLineNumbers();
+    reset();
 });
 
 // Panel collapse (delegated for robustness)
@@ -339,8 +351,11 @@ function syncScroll() {
 
 function updateBreakpoints() {
     breakpointGutter.innerHTML = '';
-    const lineHeight = 22;
-    const offset = 15;
+    // Match line-number vertical alignment (padding-top + half line-height)
+    const computed = window.getComputedStyle(lineNumbers);
+    const lineHeight = parseFloat(computed.lineHeight) || 22;
+    const paddingTop = parseFloat(computed.paddingTop) || 0;
+    const offset = paddingTop + lineHeight / 2;
 
     breakpoints.forEach((line) => {
         const bp = document.createElement('div');
@@ -936,7 +951,7 @@ function applySavedTheme() {
     const savedTheme = localStorage.getItem(STORAGE_KEYS.theme) || 'dark';
     const isLight = savedTheme === 'light';
     document.body.classList.toggle('light', isLight);
-    themeToggleBtn.textContent = isLight ? '🌙 Dark' : '☀ Light';
+    themeToggleBtn.textContent = isLight ? 'Dark Mode' : 'Light Mode';
 }
 
 // =========================
@@ -1063,7 +1078,13 @@ function renderTabs() {
         const tab = document.createElement('div');
         tab.className = 'tab';
         tab.dataset.tab = name;
-        tab.textContent = name;
+        const label = document.createElement('span');
+        label.textContent = name;
+        const close = document.createElement('button');
+        close.className = 'tab-close';
+        close.type = 'button';
+        close.textContent = '×';
+        close.setAttribute('aria-label', `Close ${name}`);
         if (name === activeTab) tab.classList.add('active');
         tab.addEventListener('click', () => {
             buffers[activeTab] = editor.value;
@@ -1073,6 +1094,20 @@ function renderTabs() {
             renderTabs();
             syncEditorWithActiveTab();
         });
+        close.addEventListener('click', (e) => {
+            e.stopPropagation();
+            if (Object.keys(buffers).length <= 1) return;
+            delete buffers[name];
+            if (activeTab === name) {
+                activeTab = Object.keys(buffers)[0] || 'main.js';
+            }
+            persistBuffers();
+            persistActiveTab();
+            renderTabs();
+            syncEditorWithActiveTab();
+        });
+        tab.appendChild(label);
+        tab.appendChild(close);
         tabsContainer.insertBefore(tab, addBtn);
     });
 }

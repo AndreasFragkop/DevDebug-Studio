@@ -25,5 +25,6 @@ Then visit `http://localhost:8000`.
 - Watches panel with expressions
 - Variable panel with editable values
 - Example loader + save custom examples
-- Multiple file tabs
+- Multiple file tabs with close buttons
+- Clear Code button for the active tab
 - Light/Dark mode toggle (saved to localStorage)

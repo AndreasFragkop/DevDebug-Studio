@@ -85,6 +85,17 @@ body.light {
     align-items: center;
 }
 
+.controls .btn {
+    min-width: 110px;
+    justify-content: center;
+    height: 36px;
+}
+
+/* Ensure header buttons (including theme toggle) match height */
+.header .btn {
+    height: 36px;
+}
+
 /* Primary button styling */
 .btn {
     padding: 8px 16px;
@@ -137,8 +148,8 @@ body.light {
     display: flex;
     align-items: center;
     gap: 8px;
-    padding: 0 10px;
-    border-left: 1px solid var(--border);
+    padding: 0;
+    border-left: none;
 }
 
 .speed-control label {
@@ -151,7 +162,7 @@ body.light {
 }
 
 .theme-toggle {
-    margin-left: 10px;
+    margin-left: 0;
 }
 
 /* Speed preset dropdown */
@@ -160,8 +171,10 @@ body.light {
     color: var(--text);
     border: 1px solid var(--border);
     border-radius: 4px;
-    font-size: 11px;
-    padding: 4px 6px;
+    font-size: 12px;
+    padding: 0 10px;
+    min-width: 120px;
+    height: 36px;
 }
 
 /* Two-column main area */
@@ -197,11 +210,27 @@ body.light {
     color: var(--text-muted);
     font-size: 12px;
     cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 6px;
 }
 
 .tab.add-tab {
     padding: 6px 10px;
     font-weight: 700;
+    color: var(--text);
+}
+
+.tab-close {
+    border: none;
+    background: transparent;
+    color: var(--text-muted);
+    font-size: 12px;
+    cursor: pointer;
+    padding: 0 2px;
+}
+
+.tab-close:hover {
     color: var(--text);
 }
 

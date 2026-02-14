@@ -2,6 +2,8 @@
 
 DevDebug Studio is a browser‑based JavaScript step debugger that lets you run code, step through execution, set breakpoints, inspect variables and the call stack, and watch expressions live. It’s a single‑page app with a VS‑Code‑style interface, example loader, timeline scrubber, and light/dark themes—built to make understanding program flow visual and interactive.
 
+![DevDebug Studio](images/devdebug.png)
+
 ## Files
 - `index.html` – App markup
 - `styles.css` – Styling

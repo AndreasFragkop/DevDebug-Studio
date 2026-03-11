@@ -25,17 +25,6 @@ DevDebug-Studio/
    - Open `http://localhost:8000`.
 3. Note: Acorn is loaded from a CDN, so internet access is required unless bundled locally.
 
-## Requirements
-- A modern web browser
-- Optional: Python 3 (only needed for local server mode)
-- Internet connection for CDN dependency (Acorn), unless vendored locally
-
-## Browser Support
-- Google Chrome (recent versions)
-- Microsoft Edge (recent versions)
-- Mozilla Firefox (recent versions)
-- Safari (recent versions)
-
 ## How to Use
 1. Click `Run` to start execution, or use `Step Over` / `Step Into` for line-by-line control.
 2. Toggle breakpoints by clicking the gutter or line numbers.
@@ -64,12 +53,6 @@ DevDebug-Studio/
 - Multi-tab editing with close/add actions
 - `Clear Code` action for active tab
 - Light/Dark mode with local persistence
-
-## Limitations
-- Focused on JavaScript debugging workflows only.
-- Uses client-side simulation and may not match full runtime edge cases.
-- CDN dependency for parser loading unless bundled locally.
-- Very large scripts may reduce responsiveness in browser-only mode.
 
 ## Privacy
 - All code execution and analysis happens in the browser.
